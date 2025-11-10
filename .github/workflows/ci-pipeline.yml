@@ -124,3 +124,4 @@ jobs:
         working-directory: ./terraform
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_github_repo_full: ${{ github.repository }}

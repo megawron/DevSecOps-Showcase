@@ -7,11 +7,13 @@ terraform {
   }
 }
 
-provider "github" {}
+provider "github" {
+  owner      = split("/", var.github_repo_full)[0]
+  repository = split("/", var.github_repo_full)[1]
+}
 
-resource "github_repository_label" "demo_label" {
-  repository = "DevSecOps-Showcase"
-  name       = "terraform: managed"
+resource "github_issue_label" "demo_label" {
+  name        = "terraform: managed"
   description = "This label is managed by Terraform (IaC)."
-  color      = "A240EF"
+  color       = "A240EF"
 }

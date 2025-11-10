@@ -1,0 +1,30 @@
+name: CI-Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # 1. Job: Build the Docker Image
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder build step
+        run: echo "Building the Docker image..."
+
+  # 2. Job: Scan the Image
+  scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Placeholder scan step
+        run: echo "Scanning the image for vulnerabilities..."
+
+  # 3. Job: Push to Registry
+  push-to-registry:
+    runs-on: ubuntu-latest
+    needs: scan
+    steps:
+      - name: Placeholder push step
+        run: echo "Pushing the image to the registry..."

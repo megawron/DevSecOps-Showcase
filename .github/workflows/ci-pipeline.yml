@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,11 +22,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+
       - name: Build and export image
         uses: docker/build-push-action@v5
         with:
           context: .
-          tags: my-app:latest
+          tags: my-app:latest # Temporary tag for internal jobs
+          labels: ${{ steps.meta.outputs.labels }} # Bake labels into the image
           push: false
           outputs: type=docker,dest=image.tar
 
@@ -65,5 +76,20 @@ jobs:
       - name: Load image from tar
         run: docker load < image.tar
 
-      - name: Placeholder push step
-        run: echo "Pushing my-app:latest..."
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+
+      - name: Tag and push the scanned image
+        run: |
+          docker tag my-app:latest ${{ steps.meta.outputs.tags }}
+          docker push ${{ steps.meta.outputs.tags }}

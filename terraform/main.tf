@@ -12,7 +12,9 @@ variable "github_repo_full" {
   description = "The full repository name, e.g., 'owner/repo'."
 }
 
-provider "github" {}
+provider "github" {
+  owner = split("/", var.github_repo_full)[0]
+}
 
 resource "github_issue_label" "demo_label" {
   repository  = split("/", var.github_repo_full)[1]

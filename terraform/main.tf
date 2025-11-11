@@ -12,12 +12,10 @@ variable "github_repo_full" {
   description = "The full repository name, e.g., 'owner/repo'."
 }
 
-provider "github" {
-  owner      = split("/", var.github_repo_full)[0]
-  repository = split("/", var.github_repo_full)[1]
-}
+provider "github" {}
 
 resource "github_issue_label" "demo_label" {
+  repository  = split("/", var.github_repo_full)[1]
   name        = "terraform: managed"
   description = "This label is managed by Terraform (IaC)."
   color       = "A240EF"
